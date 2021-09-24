@@ -12,8 +12,6 @@ namespace CarDealership.Shared
     {
         public int Id { get; set; }
 
-        public int UserId {get; set;}
-
         public IdentityUser User { get; set; }
 
         public Vehicle Vehicle { get; set; }

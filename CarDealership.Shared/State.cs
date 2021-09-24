@@ -10,6 +10,7 @@ namespace CarDealership.Shared
     public class State
     {
 
+        [MaxLength(2)]
         public string Id { get; set; }
 
         [Required]

@@ -1,3 +1,4 @@
+using CarDealership.Data.Data;
 using CarDealership.UI.Areas.Identity;
 using CarDealership.UI.Data;
 using Microsoft.AspNetCore.Builder;
@@ -37,6 +38,8 @@ namespace CarDealership.UI
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddDbContext<AppDBContext>(options =>
+            options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
