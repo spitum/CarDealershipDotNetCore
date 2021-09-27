@@ -12,75 +12,96 @@ namespace CarDealership.Data.Repositories
 {
     public class VehicleRepository : GenericRepository<Vehicle>,IVehicleRepository
     {
-
         public VehicleRepository(AppDBContext context) : base(context)
         {
+
         }
 
         public IEnumerable<FeaturedVehicle> GetFeaturedVehicles()
         {
-            var vehicles = _context.Vehicles.Include(m => m.Make).ThenInclude(mo => mo.Models).Where(f => f.Featured == true).ToList();
+            return  _context.Vehicles.Include(m => m.Make)
+                                        .Include(mo => mo.Model)
+                                        .Include(c => c.Condition)
+                                        .Include(b => b.BodyStyle)
+                                        .Include(co => co.Color)
+                                        .Include(ic => ic.InteriorColor)
+                                        .Include(t => t.Transmission).Where(f => f.Featured == true)
+                                        .Select(s => new FeaturedVehicle {VehicleID = s.Id, Make = s.Make, Model = s.Model,SalePrice = s.SalePrice,ImageFileName = s.ImageFileName,Year = s.Year }).ToList();
 
-            var featured = vehicles.Select(s => new FeaturedVehicle {VehicleID = s.Id, Make = s.Make, Model = s.Model,SalePrice = s.SalePrice,ImageFileName = s.ImageFileName,Year = s.Year }
-            );
-
-            return featured;
         }
 
-        public InventoryReport GetInventoryReport(string condition)
+        public IEnumerable<InventoryReport> GetInventoryReport(string condition)
         {
-            var vehicles = _context.Vehicles.Include(m => m.Make).Include(mo => mo.Model).Include(c => c.Condition).Where(f => f.Condition.Name == condition);
+            var vehicles =  _context.Vehicles.Include(m => m.Make)
+                                        .Include(mo => mo.Model)
+                                        .Include(c => c.Condition)
+                                        .Include(b => b.BodyStyle)
+                                        .Include(co => co.Color)
+                                        .Include(ic => ic.InteriorColor)
+                                        .Include(t => t.Transmission).Where(f => f.Condition.Name.ToLower() == condition.ToLower()).ToList();
 
-            InventoryReport inventory = vehicles.GroupBy(g => new { Condition = g.Condition.Name, Make = g.Make, g.Year, Model = g.Model })
-                .Select(v => new InventoryReport {Make = v.Key.Make,
-                                                  Model = v.Key.Model,
-                                                  Condition = condition, 
-                                                  Count = v.Count(), 
-                                                  StockValue = v.Sum(x => Math.Round(Convert.ToDecimal(x.MSRP), 2)) }
-                                                   ).FirstOrDefault();
+            var inventory = vehicles.GroupBy(g => new { Condition = g.Condition.Name, Make = g.Make.Name,Model = g.Model.Name, g.Year })
+                                        .Select(v => new InventoryReport {Make = v.Key.Make,
+                                                                          Model = v.Key.Model,
+                                                                          Condition = v.Key.Condition, 
+                                                                          Year = v.Key.Year,
+                                                                          Count = v.Count(), 
+                                                                          StockValue = v.Sum(x => Math.Round(Convert.ToDecimal(x.MSRP), 2)) }
+                                        ).ToList();
 
             return inventory;
         }
 
-        public List<Vehicle> GetSelectInventory(string type, decimal? minprice, decimal? maxprice, int? minYear, int? maxYear, string quickSearch)
+        public IEnumerable<Vehicle> GetSelectInventory(InventorySearchParameters parameters)
         {
-            var result = _context.Vehicles.Include(m => m.Make).Include(mo => mo.Model).Include(c => c.Condition);
+            var result =  _context.Vehicles.Include(m => m.Make)
+                                        .Include(mo => mo.Model)
+                                        .Include(c => c.Condition)
+                                        .Include(b => b.BodyStyle)
+                                        .Include(co => co.Color)
+                                        .Include(ic => ic.InteriorColor)
+                                        .Include(t => t.Transmission).ToList();
             var inventory = new List<Vehicle>();
+            inventory = result.ToList();
 
-            if (!String.IsNullOrEmpty(type))
-            {
-                inventory.AddRange(result.Where(c => EF.Functions.Like(c.Condition.Name, type.ToLower())));
-            }
 
-            if (minprice != null)
-            {
-                inventory = inventory.Where(s => s.SalePrice >= minprice).ToList();
-            }
 
-            if (maxprice != null)
+            if(!String.IsNullOrEmpty(parameters.Condition))
             {
-                inventory = inventory.Where(s => s.SalePrice <= maxprice).ToList();
+                inventory = inventory.Where(c => c.Condition.Name.ToLower() == parameters.Condition.ToLower()).ToList();
             }
 
 
-            if (minYear != null)
+
+            if (parameters.MinPrice != null)
             {
-                inventory = inventory.Where(s => s.Year >= minYear).ToList();
+                inventory = inventory.Where(s => s.SalePrice >= parameters.MinPrice).ToList();
             }
 
-            if (maxYear != null)
+            if (parameters.MaxPrice != null)
             {
-                inventory = inventory.Where(s => s.Year <= maxYear).ToList();
+                inventory = inventory.Where(s => s.SalePrice <= parameters.MaxPrice).ToList();
             }
 
-            if (!String.IsNullOrEmpty(quickSearch))
+
+            if (parameters.MinYear != null)
+            {
+                inventory = inventory.Where(s => s.Year >= parameters.MinYear).ToList();
+            }
+
+            if (parameters.MaxYear != null)
+            {
+                inventory = inventory.Where(s => s.Year <= parameters.MaxYear).ToList();
+            }
+
+            if (!String.IsNullOrEmpty(parameters.QuickSearch))
             {
 
-                inventory = inventory.Where(x => new[] { x.Model.Name, x.Make.Name, x.Year.ToString() }.Any(s => s.Contains(quickSearch))).ToList();
+                inventory = inventory.Where(x => new[] { x.Model.Name, x.Make.Name, x.Year.ToString() }.Any(s => s.Contains(parameters.QuickSearch))).ToList();
 
             }
 
-            return inventory;
+            return inventory.GroupBy(v => v.Id).Select(grp => grp.First()).ToList();
         }
     }
 }

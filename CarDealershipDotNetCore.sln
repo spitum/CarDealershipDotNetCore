@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cardealership.Shared", "Car
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarDealership.Data", "CarDealership.Data\CarDealership.Data.csproj", "{CE6BE136-2357-48C1-B061-ECF98509FD64}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarDealership.Api", "CarDealership.Api\CarDealership.Api.csproj", "{72BC627D-00EA-4A8F-8F32-93B04AE01DB5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{CE6BE136-2357-48C1-B061-ECF98509FD64}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CE6BE136-2357-48C1-B061-ECF98509FD64}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CE6BE136-2357-48C1-B061-ECF98509FD64}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72BC627D-00EA-4A8F-8F32-93B04AE01DB5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72BC627D-00EA-4A8F-8F32-93B04AE01DB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72BC627D-00EA-4A8F-8F32-93B04AE01DB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72BC627D-00EA-4A8F-8F32-93B04AE01DB5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

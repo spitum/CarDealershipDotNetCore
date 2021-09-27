@@ -12,8 +12,8 @@ namespace CarDealership.Data.Repositories
     {
         IEnumerable<FeaturedVehicle> GetFeaturedVehicles();
 
-        InventoryReport GetInventoryReport(string condition);
+        IEnumerable<InventoryReport> GetInventoryReport(string condition);
 
-        List<Vehicle> GetSelectInventory(string type, decimal? minprice, decimal? maxprice, int? minYear, int? maxYear, string quickSearch);
+        IEnumerable<Vehicle> GetSelectInventory(InventorySearchParameters parameters);
     }
 }
