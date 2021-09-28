@@ -1,5 +1,6 @@
 ﻿using CarDealership.Shared;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace CarDealership.Data.Data
 {
-    public class AppDBContext : DbContext
+    public class AppDBContext : IdentityDbContext
     {
         public AppDBContext(DbContextOptions<AppDBContext> options) : base(options)
         {
@@ -29,12 +30,14 @@ namespace CarDealership.Data.Data
         public DbSet<Transmission> Transmissions { get; set; }
         public DbSet<Vehicle> Vehicles { get; set; }
 
-        //public DbSet<IdentityUser> Users { get; set; }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.ApplyConfiguration(new RoleConfiguration());
+            modelBuilder.ApplyConfiguration(new AdminConfiguration());
+            modelBuilder.ApplyConfiguration(new UsersWithRolesConfig());
 
 
             modelBuilder.Entity<Make>().Property(x => x.CreatedDate).HasDefaultValueSql("getdate()");

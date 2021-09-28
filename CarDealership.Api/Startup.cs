@@ -34,6 +34,7 @@ namespace CarDealership.Api
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddTransient<IVehicleRepository, VehicleRepository>();
+            services.AddTransient<IPurchaseRepository, PurchaseRepository>();
 
             services.AddCors(options =>
             {

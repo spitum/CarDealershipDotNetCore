@@ -19,12 +19,13 @@ namespace CarDealership.Data.Repositories
 
         public List<SalesReport> GetSalesReport(SalesReportSearchParameters parameters)
         {
-            var result = _context.Purchases;
+            var result = _context.Purchases.Include(u => u.User).ToList();
             var sales = new List<Purchase>();
+            sales = result.ToList();
 
             if (!String.IsNullOrEmpty(parameters.UserName))
             {
-                sales.AddRange(result.Where(c => EF.Functions.Like(c.User.UserName, parameters.UserName.ToLower())));
+                sales = sales.Where(c => c.User.UserName.ToLower() == parameters.UserName.ToLower()).ToList();
             }
 
             if (parameters.FromDate != null)
@@ -37,13 +38,12 @@ namespace CarDealership.Data.Repositories
                 sales = sales.Where(s => s.PurchaseDate <= parameters.ToDate).ToList();
             }
 
-            List<SalesReport> salesReport = sales.GroupBy(g => new {g.User})
+            List<SalesReport> salesReport = sales.GroupBy(g => new { g.User})
                 .Select(v => new SalesReport
                 {
                     User = v.Key.User,
                     TotalSales = v.Sum(x => Math.Round(Convert.ToDecimal(x.PurchasePrice), 2)),
                     TotalVehicles = v.Count()
-
                 }
                 ).ToList();
 

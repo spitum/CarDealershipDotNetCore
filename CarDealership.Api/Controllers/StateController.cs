@@ -8,19 +8,19 @@ using System.Threading.Tasks;
 
 namespace CarDealership.Api.Controllers
 {
-    public class TransmissionController : Controller
+    public class StateController : Controller
     {
-        private readonly IGenericRepository<Transmission> _TransmissionRepository;
+        private readonly IGenericRepository<State> _stateRepository;
 
-        public TransmissionController(IGenericRepository<Transmission> TransmissionRepository)
+        public StateController(IGenericRepository<State> stateRepository)
         {
-            _TransmissionRepository = TransmissionRepository;
+            _stateRepository = stateRepository;
         }
 
         [HttpGet("/api/[controller]")]
-        public IActionResult GetTransmission()
+        public IActionResult GetStates()
         {
-            return Ok(_TransmissionRepository.GetAll());
+            return Ok(_stateRepository.GetAll());
         }
 
 

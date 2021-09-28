@@ -8,19 +8,19 @@ using System.Threading.Tasks;
 
 namespace CarDealership.Api.Controllers
 {
-    public class InteriorColorController : Controller
+    public class TransmissionController : Controller
     {
-        private readonly IGenericRepository<InteriorColor> _InteriorColorRepository;
+        private readonly IGenericRepository<Transmission> _TransmissionRepository;
 
-        public InteriorColorController(IGenericRepository<InteriorColor> InteriorColorRepository)
+        public TransmissionController(IGenericRepository<Transmission> TransmissionRepository)
         {
-            _InteriorColorRepository = InteriorColorRepository;
+            _TransmissionRepository = TransmissionRepository;
         }
 
         [HttpGet("/api/[controller]")]
-        public IActionResult GetInteriorColor()
+        public IActionResult GetTransmission()
         {
-            return Ok(_InteriorColorRepository.GetAll());
+            return Ok(_TransmissionRepository.GetAll());
         }
 
 
